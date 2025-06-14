@@ -17,4 +17,16 @@ const getAll = async (req, res) => {
   }
 };
 
-module.exports = { getAll };
+const getById = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Posts.selectById(Number(postId));
+    if (!post)
+      return res.status(404).json({ message: "Post ID does not exist" });
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving post: " + error.message });
+  }
+};
+
+module.exports = { getAll, getById };

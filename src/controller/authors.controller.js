@@ -27,7 +27,7 @@ const getById = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error retrieving authors: " + error.message });
+      .json({ error: "Error retrieving author: " + error.message });
   }
 };
 
