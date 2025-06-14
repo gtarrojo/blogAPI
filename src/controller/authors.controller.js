@@ -31,4 +31,39 @@ const getById = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById };
+const create = async (req, res) => {
+  try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Request body is missing or empty" });
+    }
+
+    const { name, email, image_url } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: "Missing required field: name" });
+    }
+    if (!email) {
+      return res.status(400).json({ error: "Missing required field: email" });
+    }
+    if (!image_url) {
+      return res
+        .status(400)
+        .json({ error: "Missing required field: image_url" });
+    }
+
+    const result = await Authors.insert({ name, email, image_url });
+
+    if (result && result.insertId) {
+      const newAuthor = await Authors.selectById(result.insertId);
+      return res.status(201).json(newAuthor);
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error creating author, insert operation failed." });
+  }
+};
+
+module.exports = { getAll, getById, create };
