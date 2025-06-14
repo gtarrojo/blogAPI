@@ -5,4 +5,13 @@ const selectAll = async () => {
   return result;
 };
 
-module.exports = { selectAll };
+const selectById = async (authorId) => {
+  const [result] = await db.query("select * from authors where idauthors = ?", [
+    authorId,
+  ]);
+
+  if (result.length === 0) return null;
+  return result[0];
+};
+
+module.exports = { selectAll, selectById };

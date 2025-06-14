@@ -17,4 +17,18 @@ const getAll = async (req, res) => {
   }
 };
 
-module.exports = { getAll };
+const getById = async (req, res) => {
+  try {
+    const { authorId } = req.params;
+    const author = await Authors.selectById(Number(authorId));
+    if (!author)
+      return res.status(404).json({ message: "Author ID does not exist" });
+    res.json(author);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error retrieving authors: " + error.message });
+  }
+};
+
+module.exports = { getAll, getById };
