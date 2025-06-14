@@ -1,3 +1,8 @@
 const db = require("../config/db");
 
-module.exports = {};
+const selectAll = async () => {
+  const [result] = await db.query(`SELECT * FROM posts`);
+  return result;
+};
+
+module.exports = { selectAll };
