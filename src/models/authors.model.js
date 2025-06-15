@@ -14,6 +14,14 @@ const selectById = async (authorId) => {
   return result[0];
 };
 
+const selectByEmail = async (email) => {
+  const [result] = await db.query("SELECT * FROM authors WHERE email = ?", [
+    email,
+  ]);
+  if (result.length === 0) return null;
+  return result[0];
+};
+
 const insert = async ({ name, email, image_url }) => {
   const [result] = await db.query(
     `insert into authors (name, email, image_url) values (?, ? ,?)`,
@@ -22,4 +30,4 @@ const insert = async ({ name, email, image_url }) => {
   return result;
 };
 
-module.exports = { selectAll, selectById, insert };
+module.exports = { selectAll, selectById, insert, selectByEmail };
