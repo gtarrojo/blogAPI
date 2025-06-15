@@ -1,5 +1,5 @@
 const Authors = require("../models/authors.model");
-const Post = require("../models/posts.model");
+const Posts = require("../models/posts.model");
 
 const getAll = async (req, res) => {
   try {
@@ -66,4 +66,20 @@ const create = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, create };
+const getAllPostByAuthor = async (req, res) => {
+  try {
+    const { authorId } = req.params;
+    const author = await Authors.selectById(Number(authorId));
+    if (!author)
+      return res.status(404).json({ message: "Author ID does not exist" });
+
+    const posts = await Posts.selectAllPostsByAuthor(authorId);
+    return res.status(200).json(posts);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error retrieving author posts: " + error.message });
+  }
+};
+
+module.exports = { getAll, getById, create, getAllPostByAuthor };

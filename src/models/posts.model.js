@@ -46,6 +46,32 @@ JOIN
   return result[0];
 };
 
+const selectAllPostsByAuthor = async (authorId) => {
+  const [result] = await db.query(
+    `SELECT
+          p.idposts,
+          p.title,
+          p.description,
+          p.created_at,
+          p.category,
+          JSON_OBJECT(
+              'idauthor', a.idauthors,
+              'name', a.name,
+              'email', a.email,
+              'image_url', a.image_url
+          ) AS author
+      FROM
+          posts AS p
+      JOIN
+          authors AS a ON p.authors_idauthors = a.idauthors
+      WHERE
+          p.authors_idauthors = ?;`,
+    [authorId]
+  );
+  if (result.length === 0) return null;
+  return result;
+};
+
 const insert = async ({ title, description, category, email }) => {
   const [result] = await db.query(
     `INSERT INTO posts (title, description, category, authors_idauthors)
@@ -60,4 +86,4 @@ VALUES
   return result;
 };
 
-module.exports = { selectAll, selectById, insert };
+module.exports = { selectAll, selectById, insert, selectAllPostsByAuthor };
