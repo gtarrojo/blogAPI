@@ -46,4 +46,18 @@ JOIN
   return result[0];
 };
 
-module.exports = { selectAll, selectById };
+const insert = async ({ title, description, category, email }) => {
+  const [result] = await db.query(
+    `INSERT INTO posts (title, description, category, authors_idauthors)
+VALUES
+  (
+    ?,
+    ?,
+    ?,
+    (SELECT idauthors FROM authors WHERE email = ?))`,
+    [title, description, category, email]
+  );
+  return result;
+};
+
+module.exports = { selectAll, selectById, insert };

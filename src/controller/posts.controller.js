@@ -6,14 +6,12 @@ const getAll = async (req, res) => {
     const posts = await Posts.selectAll();
 
     if (posts.length === 0) {
-      return res.status(404).json({ message: "No authors found" });
+      return res.status(404).json({ message: "No posts found" });
     }
 
     res.status(200).json(posts);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error retrieving authors: " + error.message });
+    res.status(500).json({ error: "Error retrieving posts: " + error.message });
   }
 };
 
@@ -37,31 +35,35 @@ const create = async (req, res) => {
         .json({ error: "Request body is missing or empty" });
     }
 
-    const { title, description, category, author_name, author_email } =
-      req.body;
+    const { title, description, category, email } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ error: "Missing required field: name" });
+    if (!title) {
+      return res.status(400).json({ error: "Missing required field: title" });
+    }
+    if (!description) {
+      return res
+        .status(400)
+        .json({ error: "Missing required field: description" });
+    }
+    if (!category) {
+      return res
+        .status(400)
+        .json({ error: "Missing required field: category" });
     }
     if (!email) {
       return res.status(400).json({ error: "Missing required field: email" });
     }
-    if (!image_url) {
-      return res
-        .status(400)
-        .json({ error: "Missing required field: image_url" });
-    }
 
-    const result = await Authors.insert({ name, email, image_url });
+    const result = await Posts.insert({ title, description, category, email });
 
     if (result && result.insertId) {
-      const newAuthor = await Authors.selectById(result.insertId);
-      return res.status(201).json(newAuthor);
+      const newPost = await Posts.selectById(result.insertId);
+      return res.status(201).json(newPost);
     }
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error creating author, insert operation failed." });
+      .json({ error: "Error creating post, insert operation failed." });
   }
 };
 
